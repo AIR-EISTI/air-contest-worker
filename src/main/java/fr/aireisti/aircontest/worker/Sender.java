@@ -25,7 +25,6 @@ public class Sender {
         connection = factory.newConnection();
         channel = connection.createChannel();
         channel.queueDeclare(TASK_QUEUE_NAME, true, false, false, null);
-
     }
 
     public static void main(String[] argv) throws java.io.IOException, java.util.concurrent.TimeoutException {
@@ -53,5 +52,17 @@ public class Sender {
 
         channel.close();
         connection.close();
+    }
+
+    public String call(String language, String code, String input) {
+        String uuid = UUID.randomUUID().toString();
+        RunnableInfo msg = new RunnableInfo(uuid, language, code, input);
+        try {
+            call(msg);
+        } catch (IOException | TimeoutException | InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return uuid;
     }
 }
