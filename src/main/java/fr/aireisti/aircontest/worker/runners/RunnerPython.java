@@ -19,6 +19,7 @@ public class RunnerPython extends AbstractRunner {
 
         ProcessBuilder processBuilder = new ProcessBuilder("python", "-c", info.getCode());
         Process process = null;
+        RunnerResult runnerResult;
 
         try {
             process = processBuilder.start();
@@ -27,11 +28,15 @@ public class RunnerPython extends AbstractRunner {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
             process.waitFor();
             stdoutStr = reader.lines().collect(Collectors.joining("\n"));
-        } catch (IOException | java.lang.InterruptedException e) {
-            e.printStackTrace();
+            runnerResult = new RunnerResult(info.getJobId(), process.exitValue(), stdoutStr);
+        } catch (IOException e) {
             process.destroy();
+            runnerResult = new RunnerResult(RunnerResult.PROCESS_COULD_NOT_START, e.getMessage());
+        } catch (java.lang.InterruptedException e) {
+            process.destroy();
+            runnerResult = new RunnerResult(RunnerResult.INTERRUPTED, e.getMessage());
         }
 
-        return new RunnerResult(info.getJobId(), process.exitValue(), stdoutStr);
+        return runnerResult;
     }
 }

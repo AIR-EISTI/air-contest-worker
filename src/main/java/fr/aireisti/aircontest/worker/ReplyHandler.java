@@ -15,7 +15,7 @@ public class ReplyHandler {
     private Channel channel = null;
 
     public void start() {
-        Logger.getLogger(ReplyHandler.class.getName()).log(Level.INFO, "Initializing connection to Job Result Queue.");
+        Logger.getLogger(ReplyHandler.class.getName()).log(Level.INFO, "Initializing connection to Job Message Queue.");
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
