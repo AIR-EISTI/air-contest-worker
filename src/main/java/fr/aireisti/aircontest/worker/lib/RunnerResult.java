@@ -7,10 +7,11 @@ public class RunnerResult {
     private String error;
     private Integer status;
 
-    public static int COULD_NOT_READ_RUNNABLE_INFO_VALUE = 10;
-    public static int PROCESS_COULD_NOT_START = 20;
-    public static int INTERRUPTED = 30;
-    public static int SUCCESS = 0;
+    public final static int COULD_NOT_READ_RUNNABLE_INFO_VALUE = 10;
+    public final static int RUNNER_NOT_FOUND = 15;
+    public final static int PROCESS_COULD_NOT_START = 20;
+    public final static int INTERRUPTED = 30;
+    public final static int SUCCESS = 0;
 
     public RunnerResult () {
 

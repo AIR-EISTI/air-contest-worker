@@ -46,6 +46,9 @@ public class Consumer extends DefaultConsumer {
         } catch (java.io.IOException e) {
             e.printStackTrace();
             runnerResult = new RunnerResult(RunnerResult.COULD_NOT_READ_RUNNABLE_INFO_VALUE, e.getMessage());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            runnerResult = new RunnerResult(RunnerResult.RUNNER_NOT_FOUND, e.getMessage());
         }
 
         AMQP.BasicProperties.Builder propsBuilder = new AMQP.BasicProperties.Builder();
