@@ -21,7 +21,7 @@ public class Sender {
 
     public Sender() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
+        factory.setHost(Config.get("workers.rabbitmqHost", DefaultConfig.RABBITMQ_HOST));
         connection = factory.newConnection();
         channel = connection.createChannel();
         channel.queueDeclare(TASK_QUEUE_NAME, true, false, false, null);

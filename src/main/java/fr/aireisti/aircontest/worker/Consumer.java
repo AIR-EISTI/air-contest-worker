@@ -1,15 +1,10 @@
 package fr.aireisti.aircontest.worker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
+import com.rabbitmq.client.*;
 import fr.aireisti.aircontest.worker.lib.AbstractRunner;
 import fr.aireisti.aircontest.worker.lib.RunnableInfo;
 import fr.aireisti.aircontest.worker.lib.RunnerResult;
-import fr.aireisti.aircontest.worker.runners.RunnerPython;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +12,20 @@ public class Consumer extends DefaultConsumer {
 
     public Consumer(Channel channel) {
         super(channel);
+    }
+
+    private AbstractRunner getRunner(String language) {
+        String runnerClassName = Config.get("runners." + language);
+        if (runnerClassName == null)
+            return null;
+        try {
+            AbstractRunner runner = (AbstractRunner) Class.forName(runnerClassName).newInstance();
+            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Getting runner '" + runnerClassName + "' for language '" + language + "'.");
+            return runner;
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -31,7 +40,8 @@ public class Consumer extends DefaultConsumer {
         RunnerResult runnerResult;
         try {
             runnableInfo = mapper.readValue(body, RunnableInfo.class);
-            runner = new RunnerPython(runnableInfo);
+            runner = this.getRunner(runnableInfo.getLanguage());
+            runner.setInfo(runnableInfo);
             runnerResult = runner.run();
         } catch (java.io.IOException e) {
             e.printStackTrace();

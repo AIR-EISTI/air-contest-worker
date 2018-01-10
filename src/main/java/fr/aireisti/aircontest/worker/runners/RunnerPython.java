@@ -9,10 +9,6 @@ import java.util.stream.Collectors;
 
 public class RunnerPython extends AbstractRunner {
 
-    public RunnerPython(RunnableInfo info) {
-        super(info);
-    }
-
     @Override
     public RunnerResult run() {
         String stdoutStr = "";
