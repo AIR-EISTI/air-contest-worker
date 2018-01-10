@@ -28,6 +28,9 @@ public class Config {
 
         Ini.Section tmpSection = getConfig().get(path[0]);
 
+        if (tmpSection == null)
+            return null;
+
         return tmpSection.get(path[1]);
     }
 
