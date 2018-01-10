@@ -5,12 +5,12 @@ import com.rabbitmq.client.*;
 import java.io.IOException;
 
 public class Worker {
-    private final static String TASK_QUEUE_NAME = "task_queue";
+    private final static String TASK_QUEUE_NAME = Config.get("workers.taskQueueName", DefaultConfig.TASK_QUEUE_NAME);
 
     public static void main(String[] argv) throws java.io.IOException, java.lang.InterruptedException, java.util.concurrent.TimeoutException {
 
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
+        factory.setHost(Config.get("workers.rabbitmqHost", DefaultConfig.RABBITMQ_HOST));
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 

@@ -13,8 +13,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 public class Sender {
-    private final static String TASK_QUEUE_NAME = "task_queue";
-    private final static String REPLY_QUEUE_NAME = "reply_queue_name";
+    private final static String TASK_QUEUE_NAME = Config.get("workers.taskQueueName", DefaultConfig.TASK_QUEUE_NAME);
+    private final static String REPLY_QUEUE_NAME = Config.get("workers.replyQueueName", DefaultConfig.REPLY_QUEUE_NAME);
 
     private Channel channel;
     private Connection connection;

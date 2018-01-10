@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ReplyHandler {
-    private final static String REPLY_QUEUE_NAME = "reply_queue_name";
+    private final static String REPLY_QUEUE_NAME = Config.get("workers.replyQueueName", DefaultConfig.REPLY_QUEUE_NAME);
     private Connection connection = null;
     private Channel channel = null;
 
@@ -18,7 +18,7 @@ public class ReplyHandler {
         Logger.getLogger(ReplyHandler.class.getName()).log(Level.INFO, "Initializing connection to Job Message Queue.");
 
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
+        factory.setHost(Config.get("workers.rabbitmqHost", DefaultConfig.RABBITMQ_HOST));
 
         try {
             connection = factory.newConnection();

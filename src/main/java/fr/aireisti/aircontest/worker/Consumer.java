@@ -34,6 +34,7 @@ public class Consumer extends DefaultConsumer {
             runner = new RunnerPython(runnableInfo);
             runnerResult = runner.run();
         } catch (java.io.IOException e) {
+            e.printStackTrace();
             runnerResult = new RunnerResult(RunnerResult.COULD_NOT_READ_RUNNABLE_INFO_VALUE, e.getMessage());
         }
 
