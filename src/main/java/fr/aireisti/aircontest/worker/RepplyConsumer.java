@@ -7,11 +7,15 @@ import com.rabbitmq.client.impl.AMQBasicProperties;
 import fr.aireisti.aircontest.worker.lib.RunnerResult;
 
 import java.io.IOException;
+import java.util.Observable;
 
 public class RepplyConsumer extends DefaultConsumer {
 
-    public RepplyConsumer(Channel channel) {
+    private ReplyHandler replyHandler;
+
+    public RepplyConsumer(ReplyHandler replyHandler, Channel channel) {
         super(channel);
+        this.replyHandler = replyHandler;
     }
 
     @Override
@@ -21,6 +25,7 @@ public class RepplyConsumer extends DefaultConsumer {
         System.out.println(new String(body, "UTF-8"));
         try {
             runnerResult = mapper.readValue(body, RunnerResult.class);
+            this.replyHandler.notifyNewMessage(runnerResult);
         } catch (IOException e) {
             e.printStackTrace();
         }
