@@ -8,6 +8,8 @@ import fr.aireisti.aircontest.worker.lib.RunnerResult;
 
 import java.io.IOException;
 import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RepplyConsumer extends DefaultConsumer {
 
@@ -22,7 +24,7 @@ public class RepplyConsumer extends DefaultConsumer {
     public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException{
         ObjectMapper mapper = new ObjectMapper();
         RunnerResult runnerResult = null;
-        System.out.println(new String(body, "UTF-8"));
+        Logger.getLogger(ReplyHandler.class.getName()).log(Level.INFO,new String(body, "UTF-8"));
         try {
             runnerResult = mapper.readValue(body, RunnerResult.class);
             this.replyHandler.notifyNewMessage(runnerResult);

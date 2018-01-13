@@ -16,6 +16,11 @@ public class ReplyHandler extends Observable {
     private Connection connection = null;
     private Channel channel = null;
 
+    public static void main(String[] argv) {
+        ReplyHandler handler = new ReplyHandler();
+        handler.start();
+    }
+
     public void start() {
         Logger.getLogger(ReplyHandler.class.getName()).log(Level.INFO, "Initializing connection to Job Message Queue.");
 
@@ -46,6 +51,11 @@ public class ReplyHandler extends Observable {
 
     public void notifyNewMessage(RunnerResult runnerResult) {
         setChanged();
-        notifyObservers(runnerResult);
+        try {
+            notifyObservers(runnerResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            clearChanged();
+        }
     }
 }

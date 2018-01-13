@@ -18,6 +18,7 @@ public class Sender {
 
     private Channel channel;
     private Connection connection;
+    private RunnableInfo msg;
 
     public Sender() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
@@ -54,15 +55,17 @@ public class Sender {
         connection.close();
     }
 
-    public String call(String language, String code, String input) {
-        String uuid = UUID.randomUUID().toString();
-        RunnableInfo msg = new RunnableInfo(uuid, language, code, input);
+    public void call() {
         try {
             call(msg);
         } catch (IOException | TimeoutException | InterruptedException e) {
             e.printStackTrace();
-            return null;
         }
+    }
+
+    public String prepare(String language, String code, String input) {
+        String uuid = UUID.randomUUID().toString();
+        msg = new RunnableInfo(uuid, language, code, input);
         return uuid;
     }
 }
