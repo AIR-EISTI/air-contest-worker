@@ -52,17 +52,17 @@ public class Consumer extends DefaultConsumer {
             runnerResult = future.get(Consumer.MAX_EXEC_TIME, TimeUnit.SECONDS);
         } catch (java.io.IOException e) {
             e.printStackTrace();
-            runnerResult = new RunnerResult(RunnerResult.COULD_NOT_READ_RUNNABLE_INFO_VALUE, e.getMessage());
+            runnerResult = new RunnerResult(null, RunnerResult.COULD_NOT_READ_RUNNABLE_INFO_VALUE, e.getMessage());
         } catch (NullPointerException e) {
             e.printStackTrace();
-            runnerResult = new RunnerResult(RunnerResult.RUNNER_NOT_FOUND, e.getMessage());
+            runnerResult = new RunnerResult(runnableInfo.getJobId(), RunnerResult.RUNNER_NOT_FOUND, e.getMessage());
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
-            runnerResult = new RunnerResult(RunnerResult.INTERRUPTED, e.getMessage());
+            runnerResult = new RunnerResult(runnableInfo == null ? null : runnableInfo.getJobId(), RunnerResult.INTERRUPTED, e.getMessage());
         } catch (TimeoutException e) {
             e.printStackTrace();
             future.cancel(true);
-            runnerResult = new RunnerResult(RunnerResult.TIMEOUT, e.getMessage());
+            runnerResult = new RunnerResult(runnableInfo.getJobId(), RunnerResult.TIMEOUT, e.getMessage());
         }
         try {
             runnerResult.setJobId(runnableInfo.getJobId());

@@ -9,6 +9,7 @@ public class RunnerResult {
 
     public final static int COULD_NOT_READ_RUNNABLE_INFO_VALUE = 10;
     public final static int RUNNER_NOT_FOUND = 15;
+    public final static int UNABLE_TO_WRITE_INPUT_FILE = 16;
     public final static int PROCESS_COULD_NOT_START = 20;
     public final static int INTERRUPTED = 30;
     public final static int TIMEOUT = 40;
@@ -18,14 +19,14 @@ public class RunnerResult {
 
     }
 
-    public RunnerResult (String jobId, Integer returnCode, String stdout) {
+    public RunnerResult (String jobId, String stdout, Integer returnCode) {
         this.jobId = jobId;
         this.returnCode = returnCode;
         this.stdout = stdout;
-        this.status = RunnerResult.SUCCESS;
+        this.status = SUCCESS;
     }
 
-    public RunnerResult(Integer errorCode, String error) {
+    public RunnerResult(String jobId, Integer errorCode, String error) {
         this.error = error;
         this.status = errorCode;
     }
