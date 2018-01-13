@@ -29,7 +29,7 @@ public class Sender {
 
     public static void main(String[] argv) throws java.io.IOException, java.util.concurrent.TimeoutException {
         UUID uuid = UUID.randomUUID();
-        RunnableInfo msg = new RunnableInfo(uuid.toString(),"python", "print('plop')", "");
+        RunnableInfo msg = new RunnableInfo(uuid.toString(),"python", "import time\ntime.sleep(7)\nprint('plop')", "");
         Sender sender = new Sender();
         try {
             sender.call(msg);

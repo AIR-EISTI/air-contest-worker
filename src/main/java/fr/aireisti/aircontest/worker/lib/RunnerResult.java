@@ -11,6 +11,7 @@ public class RunnerResult {
     public final static int RUNNER_NOT_FOUND = 15;
     public final static int PROCESS_COULD_NOT_START = 20;
     public final static int INTERRUPTED = 30;
+    public final static int TIMEOUT = 40;
     public final static int SUCCESS = 0;
 
     public RunnerResult () {

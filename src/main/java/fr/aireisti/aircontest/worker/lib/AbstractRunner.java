@@ -1,6 +1,8 @@
 package fr.aireisti.aircontest.worker.lib;
 
-public abstract class AbstractRunner {
+import java.util.concurrent.Callable;
+
+public abstract class AbstractRunner implements Callable<RunnerResult> {
     protected RunnableInfo info;
 
     public AbstractRunner () {
@@ -19,5 +21,5 @@ public abstract class AbstractRunner {
         return info;
     }
 
-    public abstract RunnerResult run ();
+    public abstract RunnerResult call ();
 }

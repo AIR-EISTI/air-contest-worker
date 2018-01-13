@@ -5,10 +5,15 @@ import com.rabbitmq.client.*;
 import fr.aireisti.aircontest.worker.lib.AbstractRunner;
 import fr.aireisti.aircontest.worker.lib.RunnableInfo;
 import fr.aireisti.aircontest.worker.lib.RunnerResult;
+
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Consumer extends DefaultConsumer {
+
+    private static final Integer MAX_EXEC_TIME = Integer.parseInt(Config.get("workers.maxExecTime", DefaultConfig.MAX_EXEC_TIME));
+    private ExecutorService executor = Executors.newFixedThreadPool(4);
 
     public Consumer(Channel channel) {
         super(channel);
@@ -35,21 +40,33 @@ public class Consumer extends DefaultConsumer {
         Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Received '" + message + "'");
 
         ObjectMapper mapper = new ObjectMapper();
-        RunnableInfo runnableInfo;
+        RunnableInfo runnableInfo = null;
         AbstractRunner runner;
         RunnerResult runnerResult;
+        Future<RunnerResult> future = null;
         try {
             runnableInfo = mapper.readValue(body, RunnableInfo.class);
             runner = this.getRunner(runnableInfo.getLanguage());
             runner.setInfo(runnableInfo);
-            runnerResult = runner.run();
+            future = executor.submit(runner);
+            runnerResult = future.get(Consumer.MAX_EXEC_TIME, TimeUnit.SECONDS);
         } catch (java.io.IOException e) {
             e.printStackTrace();
             runnerResult = new RunnerResult(RunnerResult.COULD_NOT_READ_RUNNABLE_INFO_VALUE, e.getMessage());
         } catch (NullPointerException e) {
             e.printStackTrace();
             runnerResult = new RunnerResult(RunnerResult.RUNNER_NOT_FOUND, e.getMessage());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            runnerResult = new RunnerResult(RunnerResult.INTERRUPTED, e.getMessage());
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            future.cancel(true);
+            runnerResult = new RunnerResult(RunnerResult.TIMEOUT, e.getMessage());
         }
+        try {
+            runnerResult.setJobId(runnableInfo.getJobId());
+        } catch (NullPointerException e) {}
 
         AMQP.BasicProperties.Builder propsBuilder = new AMQP.BasicProperties.Builder();
         propsBuilder.correlationId(properties.getCorrelationId());

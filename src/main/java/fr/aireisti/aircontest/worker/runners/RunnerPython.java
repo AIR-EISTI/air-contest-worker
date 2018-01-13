@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class RunnerPython extends AbstractRunner {
 
     @Override
-    public RunnerResult run() {
+    public RunnerResult call() {
         String stdoutStr = "";
 
         ProcessBuilder processBuilder = new ProcessBuilder("python", "-c", info.getCode());
